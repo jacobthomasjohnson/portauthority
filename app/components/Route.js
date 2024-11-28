@@ -1,9 +1,9 @@
 export const Route = ({ routeID, routeFrom, routeTo, routeProgress, routeStatus }) => {
       return (
-            <div className={`m-6 border p-6 border-dashed group hover:cursor-pointer ${routeStatus === "complete" ? "border-portgreen" : routeStatus === "stalled" ? "border-portred" : routeStatus === "active" ? "border-portgray" : "" }`}>
+            <div className={`m-0 xl:m-6 border border-l-0 border-r-0 xl:border-l xl:border-r p-4 xl:p-6 border-dashed group hover:cursor-pointer ${routeStatus === "complete" ? "border-portgreen" : routeStatus === "stalled" ? "border-portred" : routeStatus === "active" ? "border-portgray" : "" }`}>
                   {" "}
                   {/* Segment (full) */}
-                  <div className={`segment-top flex gap-4 pb-4 text-lg ${routeStatus === "complete" ? "text-portgreen" : routeStatus === "stalled" ? "text-portred" : routeStatus === "active" ? "text-foreground" : "" }`}>
+                  <div className={`segment-top flex gap-4 pb-4 text-sm xl:text-lg ${routeStatus === "complete" ? "text-portgreen" : routeStatus === "stalled" ? "text-portred" : routeStatus === "active" ? "text-foreground" : "" }`}>
                         <span className="font-semibold">{routeID}</span>
                         <span className="font-extralight">|</span>
                         <span className="font-light">{routeFrom} to {routeTo}</span>

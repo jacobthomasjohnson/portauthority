@@ -1,9 +1,9 @@
 export const Operation = ({ routeID, routeFrom, routeTo, opType }) => {
       return (
-            <div className={`m-6 border p-6 border-dashed group hover:cursor-pointer ${opType === "received" ? "border-portgreen" : opType === "outgoing" ? "border-portgray" : ""}`}>
+            <div className={`m-0 xl:m-6 border-t border-b xl:border-l xl:border-r p-6 border-dashed group hover:cursor-pointer ${opType === "received" ? "border-portgreen" : opType === "outgoing" ? "border-portgray" : ""}`}>
                   {" "}
                   {/* Segment (full) */}
-                  <div className={`segment-top flex gap-4 pb-4 text-lg ${opType === "received" ? "text-portgreen" : opType === "outgoing" ? "text-portgray" : ""}`}>
+                  <div className={`segment-top flex gap-4 pb-4 text-sm xl:text-lg ${opType === "received" ? "text-portgreen" : opType === "outgoing" ? "text-portgray" : ""}`}>
                         <span className="font-semibold">{routeID}</span>
                         <span className="font-extralight">|</span>
                         <span className="font-light">{routeFrom} to {routeTo}</span>

@@ -3,7 +3,7 @@ export const Upgrade = ({ upgradeID, upgradeDesc, upgradeCost }) => {
             <div className="m-6 border p-6 border-foreground border-dashed group hover:cursor-pointer">
                   {" "}
                   {/* Segment (full) */}
-                  <div className="segment-top flex gap-4 pb-4 text-lg text-foreground">
+                  <div className="segment-top flex gap-4 pb-4 text-sm xl:text-lg text-foreground">
                         <span className="font-semibold">{upgradeID}</span>
                         <span className="font-extralight">|</span>
                         <span className="font-light">

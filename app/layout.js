@@ -13,10 +13,10 @@ export default function RootLayout({ children }) {
             <html lang="en">
                   <body>
                         <div className="flex w-full h-full flex-col overflow-hidden">
-                              <div className="">
+                              <div className="max-h-[10%]">
                                     <Header />
                               </div>
-                              <div className="flex flex-col grow">
+                              <div className="flex grow overflow-auto">
                                     <Panels />
                               </div>
                         </div>

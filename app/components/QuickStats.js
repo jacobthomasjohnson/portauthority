@@ -1,6 +1,6 @@
 export const QuickStats = () => {
       return (
-            <div className="flex gap-4">
+            <div className="flex gap-2 xl:gap-4 text-xs">
                   <div>
                         <span className="text-portgreen font-thin mr-1">
                               CASH:
