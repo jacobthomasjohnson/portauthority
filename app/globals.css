@@ -1,21 +1,22 @@
+@import url("https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+      --background: #101010;
+      --foreground: #ddd8d8;
+      --portblue: #96D0F4;
+      --portred: #D89192;
+      --portgray: #646464;
+      --portgreen: #AECCB5;
+      --portyellow: #E8C789;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+      color: var(--foreground);
+      background: var(--background);
+      font-family: "Rubik", sans-serif;
+      height: 100vh;
 }

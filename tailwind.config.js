@@ -10,6 +10,11 @@ module.exports = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        portblue: "var(--portblue)",
+        portred: "var(--portred)",
+        portgray: "var(--portgray)",
+        portgreen: "var(--portgreen)",
+        portyellow: "var(--portyellow)",
       },
     },
   },
