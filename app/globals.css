@@ -5,73 +5,110 @@
 @tailwind utilities;
 
 :root {
-    --background: #101010;
-    --foreground: #ddd8d8;
-    --portblue: #96d0f4;
-    --portred: #d89192;
-    --portgray: #646464;
-    --portgreen: #aeccb5;
-    --portyellow: #e8c789;
+      --background: #101010;
+      --foreground: #ddd8d8;
+      --portblue: #96d0f4;
+      --portred: #d89192;
+      --portgray: #646464;
+      --portgreen: #aeccb5;
+      --portyellow: #e8c789;
 }
 
 body {
-    color: var(--foreground);
-    background: var(--background);
-    font-family: "Rubik", sans-serif;
-    height: 100vh;
-    overflow: hidden;
+      color: var(--foreground);
+      background: var(--background);
+      font-family: "Rubik", sans-serif;
+      height: 100vh;
+      overflow: hidden;
 }
 
 .header {
-    @apply flex w-full h-full justify-between p-4 xl:p-8 pb-0 items-center;
+      @apply flex w-full h-full justify-between p-4 xl:p-8 pb-0 items-center;
 }
 
 .logo {
-    @apply w-28 xl:w-auto;
+      @apply w-28 xl:w-auto;
+}
+
+.quick-stats {
+      @apply flex gap-2 xl:gap-4 text-xs xl:text-base;
 }
 
 .panels {
-    @apply flex flex-col w-full h-full p-0 gap-0 xl:gap-4 xl:flex-row xl:p-4;
+      @apply flex flex-col w-full h-full p-0 gap-0 xl:gap-4 xl:flex-row xl:p-4;
 }
 
 .panel-container {
-    @apply flex flex-col h-[33%] xl:h-full grow;
+      @apply flex flex-col h-[33%] xl:h-full grow;
 }
 
 .panel-title {
-    @apply p-2 px-4 xl:p-4 text-background xl:text-[#646464] text-xs bg-foreground xl:text-sm xl:bg-transparent;
+      @apply p-2 px-4 xl:p-4 text-background xl:text-[#646464] text-xs bg-foreground xl:text-sm xl:bg-transparent;
 }
 
 .panel-title-first {
 }
 
 .panel {
-    @apply xl:border border-[#292929] h-full overflow-auto text-sm xl:text-lg;
+      @apply xl:border border-[#292929] h-full overflow-auto text-sm xl:text-lg;
 }
 
 .panel-section-title {
-    @apply p-2 text-portgray xl:p-6 text-xs xl:text-sm border-b border-t border-[#292929];
+      @apply p-2 text-portgray xl:p-6 text-xs xl:text-sm border-b border-t border-[#292929];
 }
 
 .panel-section-title:first-of-type {
-    @apply xl:border-t-0 /* Make sure top title in panel does not add top border */;
+      @apply xl:border-t-0 /* Make sure top title in panel does not add top border */;
 }
 
 .segment {
-    @apply flex flex-col gap-2 xl:gap-4 m-0 xl:m-4 border border-l-0 border-r-0 xl:border-l xl:border-r p-4 xl:p-6 border-dashed hover:cursor-pointer;
+      @apply flex flex-col gap-2 xl:gap-4 m-0 xl:m-4 border border-l-0 border-r-0 xl:border-l xl:border-r p-4 xl:p-6 border-dashed hover:cursor-pointer;
 }
 
 .segment-top {
-    @apply flex gap-2 xl:gap-4 text-xs xl:text-lg;
+      @apply flex gap-2 xl:gap-4 text-xs xl:text-lg;
 }
 
 .progress-bar {
-    @apply h-1 xl:h-2 w-[100%] rounded-full;
+      @apply h-1 xl:h-2 rounded-full;
 }
 
 .segment-bottom {
 }
 
 .segment-link {
-    @apply text-portblue text-xs xl:text-sm group-hover:underline;
+      @apply text-portblue text-xs xl:text-sm group-hover:underline;
+}
+
+.log-container {
+      @apply pb-8 ml-4 mr-4
+}
+
+/* Target the scrollbar */
+::-webkit-scrollbar {
+      height: 12px; /* Height of the scrollbar (for horizontal scrollbars) */
+}
+
+/* The track (background of the scrollbar) */
+::-webkit-scrollbar-track {
+      background: var(--background); /* Light gray background */
+}
+
+/* The thumb (the draggable part of the scrollbar) */
+::-webkit-scrollbar-thumb {
+      background: var(--portgray); /* Medium gray for the thumb */
+      border-radius: 12px; /* Rounded corners for the thumb */
+}
+
+/* Hover state for the thumb */
+::-webkit-scrollbar-thumb:hover {
+      background: #555; /* Darker gray when hovered */
+}
+
+.log-item {
+      @apply p-4 ml-4 border border-portgray min-w-[400px] h-full;
+}
+
+.log-item:first-of-type {
+      @apply ml-0
 }

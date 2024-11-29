@@ -2,6 +2,7 @@ import "./globals.css";
 
 import { Header } from "./components/Header";
 import { Panels } from "./components/Panels";
+import { Log } from "./components/Log";
 
 export const metadata = {
       title: "PortAuthority",
@@ -16,8 +17,11 @@ export default function RootLayout({ children }) {
                               <div className="max-h-[10%]">
                                     <Header />
                               </div>
-                              <div className="flex grow overflow-auto">
+                              <div className="flex grow xl:max-h-[75%] overflow-auto">
                                     <Panels />
+                              </div>
+                              <div className="flex flex-row w-full min-h-[10%] max-h-[20%]">
+                                    <Log />
                               </div>
                         </div>
                   </body>

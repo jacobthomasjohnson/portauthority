@@ -9,38 +9,46 @@ import useGameStore from "./gameStore";
 
 export const Panels = () => {
       const routes = useGameStore((state) => state.routes);
+      const operations = useGameStore((state) => state.operations);
+      const upgrades = useGameStore((state) => state.upgrades);
+      const incidents = useGameStore((state) => state.upgrades);
+      const generateID = useGameStore((state) => state.generateID);
+      const generateRoute = useGameStore((state) => state.generateRoute);
       return (
-            <div className="panels">
+            <div className="panels" onClick={generateRoute}>
                   <div className="panel-container">
-                        <div className="panel-title panel-title-first">ROUTES</div>
+                        <div className="panel-title panel-title-first">
+                              ROUTES
+                        </div>
                         <div className="panel">
-                              {routes.map((route, index) => (
-                                    <Route
-                                          key={index}
-                                          routeID={route.id}
-                                          routeFrom={route.from}
-                                          routeTo={route.to}
-                                          routeProgress={route.progress}
-                                          routeStatus={route.status}
-                                    />
-                              ))}
+                              {routes.map((route, index) =>
+                                    route.status === "stable" ? (
+                                          <Route
+                                                key={route.id}
+                                                routeID={route.id}
+                                          />
+                                    ) : (
+                                          null
+                                    )
+                              )}
                         </div>
                   </div>
-                  <div className="panel-container"> {/* Needs custom -m where the first does not need. */}
+                  <div className="panel-container">
+                        {" "}
+                        {/* Needs custom -m where the first does not need. */}
                         <div className="panel-title">OPERATIONS</div>
                         <div className="panel">
-                              <Operation
-                                    routeID={`TS48X`}
-                                    routeFrom={`MEX`}
-                                    routeTo={`PORT`}
-                                    opType={`received`}
-                              />
-                              <Operation
-                                    routeID={`KXLE2`}
-                                    routeFrom={`PORT`}
-                                    routeTo={`SPN`}
-                                    opType={`outgoing`}
-                              />
+                              {routes.map((route, index) =>
+                                    route.status === "waiting" ||
+                                    route.status === "received" ? (
+                                          <Route
+                                                key={route.id}
+                                                routeID={route.id}
+                                          />
+                                    ) : (
+                                          null
+                                    )
+                              )}
                         </div>
                   </div>
                   <div className="panel-container">
@@ -57,11 +65,17 @@ export const Panels = () => {
                               <div className="panel-section-title border-t">
                                     INCIDENT MANAGEMENT
                               </div>
-                              <Incident
-                                    incidentType={`FLEET DAMAGED`}
-                                    affectedID={4}
-                                    incidentCost={4700}
-                              />
+                              {routes.map((route, index) =>
+                                    route.status === "damaged" ||
+                                    route.status === "stolen" ? (
+                                          <Route
+                                                key={route.id}
+                                                routeID={route.id}
+                                          />
+                                    ) : (
+                                          null
+                                    )
+                              )}
                         </div>
                   </div>
             </div>
