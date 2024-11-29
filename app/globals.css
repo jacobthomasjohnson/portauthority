@@ -5,18 +5,73 @@
 @tailwind utilities;
 
 :root {
-      --background: #101010;
-      --foreground: #ddd8d8;
-      --portblue: #96D0F4;
-      --portred: #D89192;
-      --portgray: #646464;
-      --portgreen: #AECCB5;
-      --portyellow: #E8C789;
+    --background: #101010;
+    --foreground: #ddd8d8;
+    --portblue: #96d0f4;
+    --portred: #d89192;
+    --portgray: #646464;
+    --portgreen: #aeccb5;
+    --portyellow: #e8c789;
 }
 
 body {
-      color: var(--foreground);
-      background: var(--background);
-      font-family: "Rubik", sans-serif;
-      height: 100vh;
+    color: var(--foreground);
+    background: var(--background);
+    font-family: "Rubik", sans-serif;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.header {
+    @apply flex w-full h-full justify-between p-4 xl:p-8 pb-0 items-center;
+}
+
+.logo {
+    @apply w-28 xl:w-auto;
+}
+
+.panels {
+    @apply flex flex-col w-full h-full p-0 gap-0 xl:gap-4 xl:flex-row xl:p-4;
+}
+
+.panel-container {
+    @apply flex flex-col h-[33%] xl:h-full grow;
+}
+
+.panel-title {
+    @apply p-2 px-4 xl:p-4 text-background xl:text-[#646464] text-xs bg-foreground xl:text-sm xl:bg-transparent;
+}
+
+.panel-title-first {
+}
+
+.panel {
+    @apply xl:border border-[#292929] h-full overflow-auto text-sm xl:text-lg;
+}
+
+.panel-section-title {
+    @apply p-2 text-portgray xl:p-6 text-xs xl:text-sm border-b border-t border-[#292929];
+}
+
+.panel-section-title:first-of-type {
+    @apply xl:border-t-0 /* Make sure top title in panel does not add top border */;
+}
+
+.segment {
+    @apply flex flex-col gap-2 xl:gap-4 m-0 xl:m-4 border border-l-0 border-r-0 xl:border-l xl:border-r p-4 xl:p-6 border-dashed hover:cursor-pointer;
+}
+
+.segment-top {
+    @apply flex gap-2 xl:gap-4 text-xs xl:text-lg;
+}
+
+.progress-bar {
+    @apply h-1 xl:h-2 w-[100%] rounded-full;
+}
+
+.segment-bottom {
+}
+
+.segment-link {
+    @apply text-portblue text-xs xl:text-sm group-hover:underline;
 }

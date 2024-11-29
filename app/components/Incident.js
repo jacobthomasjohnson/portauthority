@@ -1,9 +1,9 @@
 export const Incident = ({ incidentType, affectedID, incidentCost }) => {
       return (
-            <div className="m-6 border p-6 border-portred border-dashed group hover:cursor-pointer">
+            <div className="group segment">
                   {" "}
                   {/* Segment (full) */}
-                  <div className="segment-top flex gap-4 pb-4 text-lg text-portred">
+                  <div className="segment-top text-portred"> {/* Incidents always red text */}
                         <span className="font-semibold">{affectedID}</span>
                         <span className="font-extralight">|</span>
                         <span className="font-light">{incidentType}</span>

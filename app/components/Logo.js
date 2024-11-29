@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 
@@ -10,6 +12,7 @@ export const Logo = () => {
                               height={33}
                               width={160}
                               alt="PortAuthority Logo"
+                              className="logo"
                         />
                   </Link>
             </div>

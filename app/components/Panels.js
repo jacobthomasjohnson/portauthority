@@ -10,10 +10,10 @@ import useGameStore from "./gameStore";
 export const Panels = () => {
       const routes = useGameStore((state) => state.routes);
       return (
-            <div className="flex flex-col xl:flex-row w-full grow p-0 xl:p-4 gap-4 xl:gap-8">
-                  <div className="flex flex-col basis-1/3">
-                        <div className="p-4 text-[#646464] text-xs xl:text-sm">ROUTES</div>
-                        <div className=" xl:border border-[#292929] grow font-sm xl:font-lg">
+            <div className="panels">
+                  <div className="panel-container">
+                        <div className="panel-title panel-title-first">ROUTES</div>
+                        <div className="panel">
                               {routes.map((route, index) => (
                                     <Route
                                           key={index}
@@ -26,9 +26,9 @@ export const Panels = () => {
                               ))}
                         </div>
                   </div>
-                  <div className="flex flex-col basis-1/3 -mt-4 xl:mt-0">
-                        <div className="p-4 text-[#646464] text-xs xl:text-sm">OPERATIONS</div>
-                        <div className="border border-[#292929] grow">
+                  <div className="panel-container"> {/* Needs custom -m where the first does not need. */}
+                        <div className="panel-title">OPERATIONS</div>
+                        <div className="panel">
                               <Operation
                                     routeID={`TS48X`}
                                     routeFrom={`MEX`}
@@ -43,10 +43,10 @@ export const Panels = () => {
                               />
                         </div>
                   </div>
-                  <div className="flex flex-col basis-1/3 -mt-4 xl:mt-0">
-                        <div className="p-4 text-[#646464] text-xs xl:text-sm">MANAGEMENT</div>
-                        <div className="border border-[#292929] grow">
-                              <div className="p-4 xl:p-6 text-xs xl:text-md border-b border-[#292929]">
+                  <div className="panel-container">
+                        <div className="panel-title">MANAGEMENT</div>
+                        <div className="panel">
+                              <div className="panel-section-title">
                                     AVAILABLE UPGRADES
                               </div>
                               <Upgrade
@@ -54,7 +54,7 @@ export const Panels = () => {
                                     upgradeDesc={`Add a Port for Receiving`}
                                     upgradeCost={12000}
                               />
-                              <div className="p-6 border-b border-t border-[#292929] text-xs xl:text-md">
+                              <div className="panel-section-title border-t">
                                     INCIDENT MANAGEMENT
                               </div>
                               <Incident

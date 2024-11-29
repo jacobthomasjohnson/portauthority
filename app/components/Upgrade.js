@@ -1,9 +1,9 @@
 export const Upgrade = ({ upgradeID, upgradeDesc, upgradeCost }) => {
       return (
-            <div className="m-6 border p-6 border-foreground border-dashed group hover:cursor-pointer">
+            <div className="group segment">
                   {" "}
                   {/* Segment (full) */}
-                  <div className="segment-top flex gap-4 pb-4 text-sm xl:text-lg text-foreground">
+                  <div className="segment-top">
                         <span className="font-semibold">{upgradeID}</span>
                         <span className="font-extralight">|</span>
                         <span className="font-light">
@@ -12,8 +12,8 @@ export const Upgrade = ({ upgradeID, upgradeDesc, upgradeCost }) => {
                         <span className="font-extralight">|</span>
                         <span className="font-light">${upgradeCost}</span>
                   </div>
-                  <div className="segment-bottom pt-0">
-                        <div className="text-portblue text-sm group-hover:underline p-2 -m-2">
+                  <div className="segment-bottom">
+                        <div className="segment-link">
                               PURCHASE UPGRADE
                         </div>
                   </div>

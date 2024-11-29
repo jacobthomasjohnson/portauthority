@@ -12,7 +12,7 @@ export default function RootLayout({ children }) {
       return (
             <html lang="en">
                   <body>
-                        <div className="flex w-full h-full flex-col overflow-hidden">
+                        <div className="flex w-full h-full flex-col overflow-hidden gap-4">
                               <div className="max-h-[10%]">
                                     <Header />
                               </div>
