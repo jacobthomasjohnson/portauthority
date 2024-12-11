@@ -20,7 +20,7 @@ export default function RootLayout({ children }) {
                               <div className="flex grow xl:max-h-[75%] overflow-auto">
                                     <Panels />
                               </div>
-                              <div className="flex flex-row w-full min-h-[10%] max-h-[20%]">
+                              <div className="flex flex-row w-full min-h-[10%] max-h-[10%]">
                                     <Log />
                               </div>
                         </div>

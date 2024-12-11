@@ -5,7 +5,7 @@ const useGameStore = create((set, get) => ({
       destinations,
       stats: {
             cash: 0,
-            karma: 0,
+            karma: 10,
             level: 1,
       },
       promptActive: false,
@@ -19,8 +19,8 @@ const useGameStore = create((set, get) => ({
                   name: "Titanic",
                   available: true,
                   damaged: false,
-                  durability: 70,
-                  maxLoad: 1000,
+                  durability: 20,
+                  maxLoad: 25000,
                   speed: 20,
             },
             {
@@ -29,7 +29,7 @@ const useGameStore = create((set, get) => ({
                   available: false,
                   damaged: false,
                   durability: 70,
-                  maxLoad: 1000,
+                  maxLoad: 55000,
                   speed: 20,
             },
             {
@@ -38,7 +38,7 @@ const useGameStore = create((set, get) => ({
                   available: true,
                   damaged: false,
                   durability: 70,
-                  maxLoad: 1000,
+                  maxLoad: 92500,
                   speed: 20,
             },
       ],
@@ -144,7 +144,7 @@ const useGameStore = create((set, get) => ({
       },
       getRandomLoad: (value) => {
             const mult = get().getRandomInteger;
-            const load = Math.floor(Math.random() * 1000) * value;
+            const load = Math.floor(Math.random() * value) * 100;
             return load;
       },
       availableShips: [],
@@ -154,41 +154,53 @@ const useGameStore = create((set, get) => ({
                         ...state,
                         promptActive: false,
                         availableShips: [],
-                  }
-            })
-      },
-      currentRequestedRoute: null,
-      generateRoute: () => {
-
-            // Check to see if a route can be requested at this time, then...
-
-            const id = get().generateID();
-            const ships = get().ships;
-            let availableShips = [];
-            ships.forEach((ship) => {
-                  if (ship.available) {
-                        availableShips.push(ship);
-                  }
+                  };
             });
-            if (availableShips.length === 0) {
-                  console.log("Ships Empty.");
-            } else {
-                  // create route details and present available ships
-                  const destination = get().getRandomDestination();
-                  const load = get().getRandomLoad(destination.value);
-                  const routeDetails = `Destination: ${destination.name}, Load: ${load}lbs`;
-                  set((state) => {
-                        return {
+      },
+      routeDetails: null,
+      generateRoute: () => {
+            const oddsOfRouteCreation = get().getRandomInteger(0, 100);
+            const canGenerateRoute = oddsOfRouteCreation <= get().stats.karma;
+            const destination = get().getRandomDestination();
+            const load = get().getRandomLoad(destination.value);
+
+            if (canGenerateRoute) {
+                  const id = get().generateID();
+                  const ships = get().ships;
+                  let availableShips = [];
+
+                  ships.forEach((ship) => {
+                        if (ship.available) {
+                              availableShips.push(ship);
+                        }
+                  });
+
+                  if (availableShips.length === 0) {
+                        console.log("Ships Empty.");
+                  } else {
+                        const routeDetails = `Destination: ${destination.name}, Load: ${load}`;
+
+                        set((state) => ({
                               ...state,
-                              currentRequestedRoute: routeDetails,
+                              routeDetails,
                               availableShips,
                               promptActive: true,
-                        }
-                  })
+                        }));
+                  }
+            } else {
+                  console.log(
+                        `Cannot generate route, karma is: ${
+                              get().stats.karma
+                        } and rolled value is ${oddsOfRouteCreation}`
+                  );
+                  set((state) => ({
+                        ...state,
+                        log: [
+                              `Cannot generate route due to low karma. Request to/from: ${destination.name} carrying ${load}lbs`,
+                              ...state.log,
+                        ], // Use state.log
+                  }));
             }
-
-            // Check if any fleets are "remote"
-            // console.log(id, destination.name, load);
       },
 }));
 

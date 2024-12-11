@@ -1,4 +1,9 @@
+"use client";
+
+import useGameStore from "./gameStore";
+
 export const QuickStats = () => {
+      const currentKarma = useGameStore((state) => state.stats.karma);
       return (
             <div className="quick-stats">
                   <div>
@@ -11,7 +16,7 @@ export const QuickStats = () => {
                         <span className="text-portgreen font-thin mr-1">
                               KARMA:
                         </span>
-                        <span className="text-foreground">0</span>
+                        <span className="text-foreground">{currentKarma}%</span>
                   </div>
                   <div>
                         <span className="text-portgreen font-thin mr-1">

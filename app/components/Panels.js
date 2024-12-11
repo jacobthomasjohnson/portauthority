@@ -10,7 +10,7 @@ export const Panels = () => {
       const promptActive = useGameStore((state) => state.promptActive);
       const availableShips = useGameStore((state) => state.availableShips);
       const clearPrompt = useGameStore((state) => state.clearPrompt);
-      const currentRequestedRoute = useGameStore((state) => state.currentRequestedRoute);
+      const routeDetails = useGameStore((state) => state.routeDetails);
 
       const selectShip = (ship) => {
             console.log(ship);
@@ -40,7 +40,7 @@ export const Panels = () => {
                                     route?
                               </div>
                               <div className="">
-                                    {currentRequestedRoute}
+                                    {routeDetails}
                               </div>
                               {availableShips.map((ship) => (
                                     <div
@@ -48,11 +48,11 @@ export const Panels = () => {
                                           className="text-base hover:underline hover:cursor-pointer"
                                           key={ship.id} // Use `id` for unique keys
                                     >
-                                          {ship.name} (speed: {ship.speed}, durability: {ship.durability}, max load: {ship.maxLoad})
+                                          {ship.name} (speed: {ship.speed}, <span className={ship.durability < 50 ? "text-red-400" : ""}>durability: {ship.durability}</span>, <span>max load: {ship.maxLoad}</span>)
                                     </div>
                               ))}
                               <button
-                                    className="px-6 py-4 bg-red-600 text-white rounded text-sm"
+                                    className="px-6 py-4 bg-red-600 text-white rounded text-sm hover:bg-red-500"
                                     onClick={closeModal}
                               >
                                     Cancel Route

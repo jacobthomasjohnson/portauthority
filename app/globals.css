@@ -80,10 +80,6 @@ body {
       @apply text-portblue text-xs xl:text-sm group-hover:underline;
 }
 
-.log-container {
-      @apply pb-8 ml-4 mr-4
-}
-
 /* Target the scrollbar */
 ::-webkit-scrollbar {
       height: 12px; /* Height of the scrollbar (for horizontal scrollbars) */
