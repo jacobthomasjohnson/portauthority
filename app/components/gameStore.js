@@ -8,6 +8,7 @@ const useGameStore = create((set, get) => ({
             karma: 0,
             level: 1,
       },
+      promptActive: false,
       upgrades: [],
       management: [{}],
       log: [],
@@ -15,6 +16,7 @@ const useGameStore = create((set, get) => ({
       ships: [
             {
                   id: 1,
+                  name: "Titanic",
                   available: true,
                   damaged: false,
                   durability: 70,
@@ -23,6 +25,7 @@ const useGameStore = create((set, get) => ({
             },
             {
                   id: 2,
+                  name: "Beast",
                   available: false,
                   damaged: false,
                   durability: 70,
@@ -31,6 +34,7 @@ const useGameStore = create((set, get) => ({
             },
             {
                   id: 3,
+                  name: "Quardic",
                   available: true,
                   damaged: false,
                   durability: 70,
@@ -143,27 +147,48 @@ const useGameStore = create((set, get) => ({
             const load = Math.floor(Math.random() * 1000) * value;
             return load;
       },
+      availableShips: [],
+      clearPrompt: () => {
+            set((state) => {
+                  return {
+                        ...state,
+                        promptActive: false,
+                        availableShips: [],
+                  }
+            })
+      },
+      currentRequestedRoute: null,
       generateRoute: () => {
+
+            // Check to see if a route can be requested at this time, then...
+
             const id = get().generateID();
-            const destination = get().getRandomDestination();
             const ships = get().ships;
             let availableShips = [];
-
             ships.forEach((ship) => {
                   if (ship.available) {
                         availableShips.push(ship);
                   }
             });
-
-            if(availableShips.length === 0) {
-                  console.log('Ships Empty.')
+            if (availableShips.length === 0) {
+                  console.log("Ships Empty.");
             } else {
-                  // present available ships
+                  // create route details and present available ships
+                  const destination = get().getRandomDestination();
+                  const load = get().getRandomLoad(destination.value);
+                  const routeDetails = `Destination: ${destination.name}, Load: ${load}lbs`;
+                  set((state) => {
+                        return {
+                              ...state,
+                              currentRequestedRoute: routeDetails,
+                              availableShips,
+                              promptActive: true,
+                        }
+                  })
             }
 
-            const load = get().getRandomLoad(destination.value);
             // Check if any fleets are "remote"
-            console.log(id, destination.name, load);
+            // console.log(id, destination.name, load);
       },
 }));
 
