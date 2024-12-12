@@ -20,6 +20,17 @@ const useGameStore = create((set, get) => ({
             };
         });
     },
+    updateOfferedRoute: (key, value) => {
+        set((state) => {
+            return {
+                ...state,
+                offeredRoute: {
+                    ...state.offeredRoute,
+                    [key]: value,
+                },
+            };
+        });
+    },
     clearOfferedRoute: () => {
         set((state) => {
             return {
@@ -111,7 +122,7 @@ const useGameStore = create((set, get) => ({
         },
     ],
     findShipById: (id) => {
-        return get().ships.find((ship) => ship.id === id); // Returns the object from Ships that corresponds to the ID entered
+        return get().ships.find((ship) => ship.shipId === id); // Returns the object from Ships that corresponds to the ID entered
     },
     updateShip: (shipId, key, value) => {
         set((state) => {
@@ -119,7 +130,7 @@ const useGameStore = create((set, get) => ({
                 ...state,
                 ships: state.ships.map(
                     (ship) =>
-                        ship.id === shipId
+                        ship.shipId === shipId
                             ? { ...ship, [key]: value } // Update the specified key
                             : ship // Keep other ships unchanged
                 ),
@@ -141,7 +152,7 @@ const useGameStore = create((set, get) => ({
         set((state) => {
             return {
                 docks: state.docks.map((d) =>
-                    d.id === dockId
+                    d.dockId === dockId
                         ? {
                               ...d,
                               [key]: value,
@@ -161,12 +172,42 @@ const useGameStore = create((set, get) => ({
             from: "PORT",
             to: "CHI",
             load: 847, // Value of route when completed, cut if issue occurs.
+            value: 10000,
             progress: 0, // Actively updates throughout the course of the route.
             status: "stable",
         },
     ],
     findRouteById: (id) => {
-        return get().routes.find((route) => route.id === id); // Returns the object from Routes that corresponds to the ID entered
+        return get().routes.find((route) => route.routeId === id); // Returns the object from Routes that corresponds to the ID entered
+    },
+    createRoute: (details) => {
+        let to;
+        let from;
+        if (details.routeDirection === "inbound") {
+            from = details.routeDestination;
+            to = "PORT";
+        } else {
+            from = "PORT";
+            to = details.routeDestination;
+        }
+        set((state) => {
+            return {
+                ...state,
+                routes: [
+                    ...state.routes,
+                    {
+                        id: details.routeId,
+                        shipId: details.shipId,
+                        from: from,
+                        to: to,
+                        load: details.routeLoad,
+                        value: details.routeValue,
+                        progress: 0,
+                        status: "stable",
+                    },
+                ],
+            };
+        });
     },
     updateRoute: (routeId, key, value) => {
         set((state) => {
@@ -174,7 +215,7 @@ const useGameStore = create((set, get) => ({
                 ...state,
                 routes: state.routes.map(
                     (route) =>
-                        route.id === routeId
+                        route.routeId === routeId
                             ? { ...route, [key]: value } // Update the specified key
                             : route // Keep other routes unchanged
                 ),
@@ -183,7 +224,7 @@ const useGameStore = create((set, get) => ({
     },
     loadValueMultiplier: 2,
     determineValueBasedOnLoad: (routeLoad) => {
-      return routeLoad * get().loadValueMultiplier;
+        return routeLoad * get().loadValueMultiplier;
     },
     generateRoute: () => {
         const ships = get().ships; // Fetches all available ships
@@ -192,7 +233,8 @@ const useGameStore = create((set, get) => ({
         const generatedRouteLoad = get().getRandomLoad(
             generatedRouteDestination.value
         ); // Fetches random load value based on destination
-        const determinedLoadValue = get().determineValueBasedOnLoad(generatedRouteLoad);
+        const determinedLoadValue =
+            get().determineValueBasedOnLoad(generatedRouteLoad);
 
         /* 
         
@@ -210,15 +252,31 @@ const useGameStore = create((set, get) => ({
         const localShipsAvailable = localShips.length > 0;
 
         if (availableShips.length === 0) {
-            console.log(`There are no ships available either remote or locally.`)
+            console.log(
+                `There are no ships available either remote or locally.`
+            );
             return;
         }
 
-        console.log(remoteShips)
+        console.log(remoteShips);
+
+        /*
+        
+        Offered route must include everything a route contains:
+
+            id: "JDXSM", // Randomly generated string ID.
+            ship: 2, // Which ship (by ID) is in use for this route.
+            from: "PORT",
+            to: "CHI",
+            load: 847, // Value of route when completed, cut if issue occurs.
+            progress: 0, // Actively updates throughout the course of the route.
+            status: "stable",
+        
+        */
 
         if (remoteShipsAvailable) {
             // Create route using remote ships, then return.
-            console.log(`Remote ships are available, create an inbound route.`)
+            console.log(`Remote ships are available, create an inbound route.`);
             set((state) => {
                 return {
                     ...state,
@@ -236,7 +294,9 @@ const useGameStore = create((set, get) => ({
         }
         if (localShipsAvailable) {
             // Create route using local ships, then return.
-            console.log(`Remote ships are NOT available, create an outbound route.`)
+            console.log(
+                `Remote ships are NOT available, create an outbound route.`
+            );
             set((state) => {
                 return {
                     ...state,
@@ -254,27 +314,65 @@ const useGameStore = create((set, get) => ({
         }
     },
 
-    increaseRouteProgress: (routeId) => {
-        const { findRouteById } = get(); // Assuming findRouteById is part of the store
-        const route = findRouteById(routeId);
-        const ships = get().ships;
-        const ship = ships.find((ship) => ship.id === route.ship);
-        if (!route) return; // Exit if route not found
-        const shipSpeed = ship.speed; // Adjust based on how ship speed is defined
-        set((state) => {
-            return {
-                routes: state.routes.map(
-                    (r) =>
-                        r.id === routeId
-                            ? {
-                                  ...r,
-                                  progress: r.progress + 0.01 * shipSpeed,
-                              } // Update progress
-                            : r // Keep other routes unchanged
-                ),
-            };
-        });
+    startProgressUpdates: () => {
+        if (get().progressInterval) return; // Prevent duplicate intervals
+        const interval = setInterval(() => {
+            set((state) => {
+                return {
+                    routes: state.routes.map((route) => {
+                        if (route.status === "stable" && route.progress < 100) {
+                            const ship = state.ships.find(
+                                (ship) => ship.id === route.shipId
+                            );
+                            const progressIncrement = ship?.speed || 1;
+                            return {
+                                ...route,
+                                progress: Math.min(
+                                    route.progress + progressIncrement * 0.01,
+                                    100
+                                ),
+                            };
+                        }
+                        if (
+                            route.progress >= 100 &&
+                            route.status === "stable"
+                        ) {
+                            return { ...route, status: "waiting" }; // Automatically move to 'waiting'
+                        }
+                        return route;
+                    }),
+                };
+            });
+        }, 100); // Adjust interval timing as needed
+        set({ progressInterval: interval });
     },
+    stopProgressUpdates: () => {
+        clearInterval(get().progressInterval);
+        set({ progressInterval: null });
+    },
+    progressInterval: null,
+
+    // increaseRouteProgress: (routeId) => {
+    //     const { findRouteById } = get(); // Assuming findRouteById is part of the store
+    //     const route = findRouteById(routeId);
+    //     const ships = get().ships;
+    //     const ship = ships.find((ship) => ship.shipId === route.shipId);
+    //     if (!route) return; // Exit if route not found
+    //     const shipSpeed = ship.speed; // Adjust based on how ship speed is defined
+    //     set((state) => {
+    //         return {
+    //             routes: state.routes.map(
+    //                 (r) =>
+    //                     r.routeId === routeId
+    //                         ? {
+    //                               ...r,
+    //                               progress: r.progress + 0.01 * shipSpeed,
+    //                           } // Update progress
+    //                         : r // Keep other routes unchanged
+    //             ),
+    //         };
+    //     });
+    // },
 
     ///////////////////////// Generation System /////////////////////////
 
