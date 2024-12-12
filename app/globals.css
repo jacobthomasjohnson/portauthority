@@ -39,7 +39,7 @@ body {
 }
 
 .panel-container {
-      @apply flex flex-col h-[33%] xl:h-full grow;
+      @apply flex flex-col h-[33%] xl:h-full w-1/3 grow;
 }
 
 .panel-title {
@@ -70,7 +70,7 @@ body {
 }
 
 .progress-bar {
-      @apply h-1 xl:h-2 rounded-full;
+      @apply h-1 xl:h-2 rounded-full transition-all duration-75 ease-linear;
 }
 
 .segment-bottom {

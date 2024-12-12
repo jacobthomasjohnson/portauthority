@@ -2,120 +2,67 @@ import { create } from "zustand";
 import { destinations } from "./destinations";
 
 const useGameStore = create((set, get) => ({
+      ///////////////////////// Imported Items /////////////////////////
+
       destinations,
-      stats: {
-            cash: 0,
-            karma: 10,
-            level: 1,
-      },
-      promptActive: false,
-      upgrades: [],
-      management: [{}],
-      log: [],
-      usedIDs: [],
-      ships: [
-            {
-                  id: 1,
-                  name: "Titanic",
-                  available: true,
-                  damaged: false,
-                  durability: 20,
-                  maxLoad: 25000,
-                  speed: 20,
-            },
-            {
-                  id: 2,
-                  name: "Beast",
-                  available: false,
-                  damaged: false,
-                  durability: 70,
-                  maxLoad: 55000,
-                  speed: 20,
-            },
-            {
-                  id: 3,
-                  name: "Quardic",
-                  available: true,
-                  damaged: false,
-                  durability: 70,
-                  maxLoad: 92500,
-                  speed: 20,
-            },
-      ],
-      ports: [
-            {
-                  id: 1,
-                  available: true,
-                  damaged: false,
-                  employees: 1,
-            },
-      ],
-      routes: [
-            {
-                  id: "E6XDN", // Randomly generated string ID.
-                  fleet: 1, // Which fleet (by ID) is in use for this route.
-                  from: "PORT",
-                  to: "CHI",
-                  load: 847, // Value of route when completed, cut if issue occurs.
-                  stability: 42, // Likelihood of route success without issue.
-                  progress: 12, // Actively updates throughout the course of the route.
-                  status: "stable",
-            },
-            {
-                  id: "JDXSM", // Randomly generated string ID.
-                  fleet: 2, // Which fleet (by ID) is in use for this route.
-                  from: "PORT",
-                  to: "CHI",
-                  load: 847, // Value of route when completed, cut if issue occurs.
-                  stability: 42, // Likelihood of route success without issue.
-                  progress: 44, // Actively updates throughout the course of the route.
-                  status: "damaged",
-            },
-            {
-                  id: "IDNWU", // Randomly generated string ID.
-                  fleet: 3, // Which fleet (by ID) is in use for this route.
-                  from: "MEX",
-                  to: "PORT",
-                  load: 2000, // Value of route when completed, cut if issue occurs.
-                  stability: 93, // Likelihood of route success without issue.
-                  progress: 100, // Actively updates throughout the course of the route.
-                  status: "waiting",
-            },
-            {
-                  id: "I832H", // Randomly generated string ID.
-                  fleet: 4, // Which fleet (by ID) is in use for this route.
-                  from: "IMA",
-                  to: "PORT",
-                  load: 5000, // Value of route when completed, cut if issue occurs.
-                  stability: 98, // Likelihood of route success without issue.
-                  progress: 100, // Actively updates throughout the course of the route.
-                  status: "received",
-            },
-            {
-                  id: "NDUW8", // Randomly generated string ID.
-                  fleet: 5, // Which fleet (by ID) is in use for this route.
-                  from: "XMS",
-                  to: "PORT",
-                  load: 1000, // Value of route when completed, cut if issue occurs.
-                  stability: 83, // Likelihood of route success without issue.
-                  progress: 0, // Actively updates throughout the course of the route.
-                  status: "remote",
-            },
-      ],
-      addToLog: (text) => {
+
+      ///////////////////////// Offered Route /////////////////////////
+
+      offeredRoute: {},
+      setOfferedRoute: (details) => {
             set((state) => {
-                  if (state.log != []) {
-                        console.log("not empty");
-                        return {
-                              log: [text, ...state.log],
-                        };
-                  }
+                  return {
+                        ...state,
+                        offeredRoute: {
+                              ...state.offeredRoute,
+                              details,
+                        },
+                  };
             });
       },
-      generateID: () => {
+      clearOfferedRoute: () => {
+            set((state) => {
+                  return {
+                        ...state,
+                        offeredRoute: {},
+                  };
+            });
+      },
+
+      ///////////////////////// Player Stats /////////////////////////
+
+      playerStats: {
+            cash: 0,
+            karma: 100,
+            level: 1,
+      },
+
+      ///////////////////////// Prompt System /////////////////////////
+
+      currentPrompt: null,
+      setCurrentPrompt: (type) => {
+            set((state) => {
+                  return {
+                        ...state,
+                        currentPrompt: type,
+                  };
+            });
+      },
+
+      ///////////////////////// Upgrades System /////////////////////////
+
+      upgrades: [],
+      management: [{}],
+
+      ///////////////////////// Logging System /////////////////////////
+
+      log: [],
+
+      ///////////////////////// ID System /////////////////////////
+
+      usedIDs: [],
+      generateId: () => {
             const characters = "ABCDEFGHIJKLMNOPQRSTUVWYX123456789";
-            let usedIDs = get().usedIDs;
-            let log = get().log;
             let id;
             do {
                   id = "";
@@ -124,9 +71,164 @@ const useGameStore = create((set, get) => ({
                               Math.floor(Math.random() * characters.length)
                         );
                   }
-            } while (usedIDs.includes(id));
+            } while (get().usedIDs.includes(id));
             return id;
       },
+
+      ///////////////////////// Ship System /////////////////////////
+
+      ships: [
+            {
+                  id: 1,
+                  name: "Titanic",
+                  available: true,
+                  damaged: false,
+                  durability: 20,
+                  maxLoad: 25000,
+                  speed: 1,
+                  isRemote: false,
+            },
+            {
+                  id: 2,
+                  name: "Exists",
+                  available: true,
+                  damaged: false,
+                  durability: 20,
+                  maxLoad: 25000,
+                  speed: 1,
+                  isRemote: false,
+            },
+      ],
+      findShipById: (id) => {
+            return get().ships.find((ship) => ship.id === id); // Returns the object from Ships that corresponds to the ID entered
+      },
+      updateShip: (shipId, key, value) => {
+            set((state) => {
+                  return {
+                        ...state,
+                        ships: state.ships.map(
+                              (ship) =>
+                                    ship.id === shipId
+                                          ? { ...ship, [key]: value } // Update the specified key
+                                          : ship // Keep other ships unchanged
+                        ),
+                  };
+            });
+      },
+
+      ///////////////////////// Docks System /////////////////////////
+
+      docks: [
+            {
+                  id: 1,
+                  available: true,
+                  damaged: false,
+                  employees: 1,
+            },
+      ],
+
+      ///////////////////////// Routes System /////////////////////////
+
+      routes: [
+            {
+                  id: "JDXSM", // Randomly generated string ID.
+                  ship: 2, // Which ship (by ID) is in use for this route.
+                  from: "PORT",
+                  to: "CHI",
+                  load: 847, // Value of route when completed, cut if issue occurs.
+                  progress: 0, // Actively updates throughout the course of the route.
+                  status: "stable",
+            },
+      ],
+      findRouteById: (id) => {
+            return get().routes.find((route) => route.id === id); // Returns the object from Routes that corresponds to the ID entered
+      },
+      updateRoute: (routeId, key, value) => {
+            set((state) => {
+                  return {
+                        ...state,
+                        routes: state.routes.map(
+                              (route) =>
+                                    route.id === routeId
+                                          ? { ...route, [key]: value } // Update the specified key
+                                          : route // Keep other routes unchanged
+                        ),
+                  };
+            });
+      },
+      generateRoute: () => {
+            const ships = get().ships; // Fetches all available ships
+            const generatedRouteId = get().generateId(); // Generates a unique route ID
+            const generatedRouteDestination = get().getRandomDestination(); // Fetches a random destination
+            const generatedRouteLoad = get().getRandomLoad(
+                  generatedRouteDestination.value
+            ); // Fetches random load value based on destination
+            const remoteShips = ships.filter((ship) => ship.isRemote === true);
+            const localShips = ships.filter((ship) => ship.isRemote === false);
+            const remoteShipsAvailable = remoteShips.length > 0;
+            const localShipsAvailable = localShips.length > 0;
+            if (remoteShipsAvailable) {
+                  // Create route using remote ships, then return.
+                  set((state) => {
+                        return {
+                              ...state,
+                              currentPrompt: "chooseShip",
+                              offeredRoute: {
+                                    routeId: generatedRouteId,
+                                    routeDestination: generatedRouteDestination,
+                                    routeDirection: "inbound",
+                                    routeLoad: generatedRouteLoad,
+                                    routeShipChoices: remoteShipsAvailable,
+                              },
+                        };
+                  });
+            }
+            if (localShipsAvailable) {
+                  // Create route using local ships, then return.
+                  set((state) => {
+                        return {
+                              ...state,
+                              currentPrompt: "chooseShip",
+                              offeredRoute: {
+                                    routeId: generatedRouteId,
+                                    routeDestination: generatedRouteDestination,
+                                    routeDirection: "outbound",
+                                    routeLoad: generatedRouteLoad,
+                                    routeShipChoices: localShipsAvailable,
+                              },
+                        };
+                  });
+            }
+            // No ships available, then return.
+            return;
+      },
+
+      increaseRouteProgress: (routeId) => {
+            const { findRouteById } = get(); // Assuming findRouteById is part of the store
+            const route = findRouteById(routeId);
+            const ships = get().ships;
+            const ship = ships.find((ship) => ship.id === route.ship);
+            if (!route) return; // Exit if route not found
+            const shipSpeed = ship.speed; // Adjust based on how ship speed is defined
+            set((state) => {
+                  return {
+                        routes: state.routes.map(
+                              (r) =>
+                                    r.id === routeId
+                                          ? {
+                                                  ...r,
+                                                  progress:
+                                                        r.progress +
+                                                        0.01 * shipSpeed,
+                                            } // Update progress
+                                          : r // Keep other routes unchanged
+                        ),
+                  };
+            });
+      },
+
+      ///////////////////////// Generation System /////////////////////////
+
       getRandomDestination: () => {
             const destinations = get().destinations;
             return destinations[
@@ -146,61 +248,6 @@ const useGameStore = create((set, get) => ({
             const mult = get().getRandomInteger;
             const load = Math.floor(Math.random() * value) * 100;
             return load;
-      },
-      availableShips: [],
-      clearPrompt: () => {
-            set((state) => {
-                  return {
-                        ...state,
-                        promptActive: false,
-                        availableShips: [],
-                  };
-            });
-      },
-      routeDetails: null,
-      generateRoute: () => {
-            const oddsOfRouteCreation = get().getRandomInteger(0, 100);
-            const canGenerateRoute = oddsOfRouteCreation <= get().stats.karma;
-            const destination = get().getRandomDestination();
-            const load = get().getRandomLoad(destination.value);
-
-            if (canGenerateRoute) {
-                  const id = get().generateID();
-                  const ships = get().ships;
-                  let availableShips = [];
-
-                  ships.forEach((ship) => {
-                        if (ship.available) {
-                              availableShips.push(ship);
-                        }
-                  });
-
-                  if (availableShips.length === 0) {
-                        console.log("Ships Empty.");
-                  } else {
-                        const routeDetails = `Destination: ${destination.name}, Load: ${load}`;
-
-                        set((state) => ({
-                              ...state,
-                              routeDetails,
-                              availableShips,
-                              promptActive: true,
-                        }));
-                  }
-            } else {
-                  console.log(
-                        `Cannot generate route, karma is: ${
-                              get().stats.karma
-                        } and rolled value is ${oddsOfRouteCreation}`
-                  );
-                  set((state) => ({
-                        ...state,
-                        log: [
-                              `Cannot generate route due to low karma. Request to/from: ${destination.name} carrying ${load}lbs`,
-                              ...state.log,
-                        ], // Use state.log
-                  }));
-            }
       },
 }));
 

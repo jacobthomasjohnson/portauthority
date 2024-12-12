@@ -1,11 +1,36 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import useGameStore from "./gameStore";
 
 export const Route = ({ routeID }) => {
-      const routes = useGameStore((state) => state.routes);
-      const addToLog = useGameStore((state) => state.addToLog);
-      const route = routes.find((item) => item.id === routeID);
+      const findRouteById = useGameStore((state) => state.findRouteById);
+      const updateRoute = useGameStore((state) => state.updateRoute);
+      const increaseRouteProgress = useGameStore(
+            (state) => state.increaseRouteProgress
+      );
+      const route = findRouteById(routeID);
+      const routePercentage = route.progress;
+      const [routeProgress, setRouteProgress] = useState(0);
+      useEffect(() => {
+            setRouteProgress(routePercentage)
+      }, [routePercentage]);
+      useEffect(() => {
+            if (route.status === "stable") {
+                  if(route.progress >= 100) {
+                        updateRoute(routeID, "status", "waiting");
+                        return
+                        // move to waiting
+                  } 
+                  setTimeout(() => {
+                        increaseRouteProgress(routeID)
+                  }, 10);
+                  return;
+
+                  // continuously increase progress
+            }
+      }, [route]);
+
       return (
             <div
                   key={route.id}
@@ -40,7 +65,7 @@ export const Route = ({ routeID }) => {
                               {route.from} to {route.to}
                         </span>
                         <span className="font-extralight">|</span>
-                        <span className="font-light">{route.progress}%</span>
+                        <span className="font-light">{Math.floor(routeProgress)}%</span>
                         {route.status === "damaged" && (
                               <>
                                     <span className="font-extralight">|</span>
@@ -60,9 +85,7 @@ export const Route = ({ routeID }) => {
                         {route.status === "received" && (
                               <>
                                     <span className="font-extralight">|</span>
-                                    <span className="font-light">
-                                          RECEIVED
-                                    </span>
+                                    <span className="font-light">RECEIVED</span>
                               </>
                         )}
                   </div>

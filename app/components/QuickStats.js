@@ -3,7 +3,7 @@
 import useGameStore from "./gameStore";
 
 export const QuickStats = () => {
-      const currentKarma = useGameStore((state) => state.stats.karma);
+      const currentKarma = useGameStore((state) => state.playerStats.karma);
       return (
             <div className="quick-stats">
                   <div>

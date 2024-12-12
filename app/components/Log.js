@@ -17,11 +17,7 @@ export const Log = () => {
             if(log.length === 0) {
                   console.log('Log is empty.')
             } else {
-                  let color;
-                  if(log[0].includes("Cannot")) {
-                        color = `FF0000`;
-                  }
-                  createLogItem(log[0], color);
+                  createLogItem(log[0]);
             }
       }, [log]);
 
