@@ -1,8 +1,8 @@
 "use client";
 
-import { Route } from "./Route";
-import { Upgrade } from "./Upgrade";
-import useGameStore from "./gameStore";
+import { Route } from "../components/Route";
+import { Upgrade } from "../components/Upgrade";
+import useGameStore from "../store/gameStore";
 import { useEffect, useState } from "react";
 
 export const Panels = () => {
@@ -11,7 +11,16 @@ export const Panels = () => {
       const setCurrentPrompt = useGameStore((state) => state.setCurrentPrompt);
       const routeDetails = useGameStore((state) => state.routeDetails);
       const startRoute = useGameStore((state) => state.startRoute);
+      const offeredRoute = useGameStore((state) => state.offeredRoute);
+
+      const [noShipSelected, setNoShipSelected] = useState(false);
+
+      useEffect(() => {
+            console.log(offeredRoute);
+      }, [offeredRoute]);
+
       const [shipChoice, setShipChoice] = useState({});
+
       const selectShip = (ship) => {
             console.log(`Set ship choice to: ${ship.name}`);
             setShipChoice(ship);
@@ -25,8 +34,10 @@ export const Panels = () => {
       const confirmShip = () => {
             // Generate route using selected ship (shipChoice)
             if (Object.keys(shipChoice).length === 0) {
+                  setNoShipSelected(true);
                   console.log(
                         `You must select a ship before proceeding with the route!`
+                        // Add a feature to pop up a small hud indicator to show this text on screen temporarily.
                   );
             } else {
                   console.log(
@@ -52,17 +63,32 @@ export const Panels = () => {
                         <>
                               <div className="z-40 bg-black opacity-70 w-full h-full top-0 left-0 fixed transition-all"></div>
                               <div
-                                    className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 min-w-[700px] min-h-[500px] bg-background border rounded-xl flex items-center justify-center flex-col gap-4"
+                                    className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 bg-background border rounded-xl flex  justify-center items-center flex-col gap-5 p-12 min-w-[800px] min-h-[500px]"
                                     onClick={(e) => e.stopPropagation()} // Prevent click propagation to `generateRoute`
                               >
-                                    <div className="text-lg">
-                                          Which ship would you like to use for
-                                          the following route?
+                                    <div className="text-2xl text-portblue">
+                                          New Route Proposed!
                                     </div>
-                                    <div className="text-3xl">
-                                          {routeDetails}
+                                    <div className="text-base">
+                                          <span className="proposed-route-id">{offeredRoute.routeId}</span> {offeredRoute.routeDirection === "inbound" ? `FROM ${offeredRoute.routeDestination.name}` : `TO ${offeredRoute.routeDestination.name}`}
                                     </div>
-                                    {availableShips.map((ship) => (
+                                    <div className="text-base">
+                                          CARRYING {offeredRoute.routeLoad}lbs worth <span className="text-portgreen">${offeredRoute.routeValue}</span>
+                                    </div>
+                                    <div className="text-base">
+                                          Choose a Ship for this Route:
+                                          {offeredRoute.routeShipChoices.map((ship) => (
+                                                <div onClick={() => selectShip(ship)} key={ship.id} className={`my-2 p-4 border rounded hover:cursor-pointer hover:text-white ${shipChoice === ship ? "bg-portgreen text-background hover:text-background" : ""}`}>
+                                                      <span className="">{ship.name}</span> Speed: {ship.speed * 100}mph Durability: {ship.durability}
+                                                </div>
+                                          ))}
+                                    </div>
+                                    {noShipSelected && (
+                                          <div className="text-base text-portred font-bold">
+                                                YOU MUST CHOOSE A SHIP FOR THE ROUTE FIRST!
+                                          </div>
+                                    )}
+                                    {/* {availableShips.map((ship) => (
                                           <div
                                                 onClick={() => selectShip(ship)}
                                                 className={`text-base transition-all hover:underline hover:cursor-pointer text-portblue rounded-lg border-dashed p-4 border border-transparent ${
@@ -90,16 +116,16 @@ export const Panels = () => {
                                                 </span>
                                                 )
                                           </div>
-                                    ))}
+                                    ))} */}
                                     <div className="flex gap-4">
                                           <button
-                                                className="px-6 py-4 bg-red-600 text-white rounded text-sm hover:bg-red-500"
+                                                className="px-4 py-2 bg-portgray text-white rounded text-sm hover:bg-red-500"
                                                 onClick={closeModal}
                                           >
                                                 CANCEL ROUTE
                                           </button>
                                           <button
-                                                className="px-6 py-4 bg-foreground text-background rounded text-sm hover:bg-white"
+                                                className="px-4 py-2 bg-portgreen text-background rounded text-sm hover:bg-white"
                                                 onClick={confirmShip}
                                           >
                                                 CONFIRM

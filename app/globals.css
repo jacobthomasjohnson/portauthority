@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 :root {
-      --background: #101010;
+      --background: #171818;
       --foreground: #ddd8d8;
       --portblue: #96d0f4;
       --portred: #d89192;
@@ -28,6 +28,35 @@ body {
 
 .logo {
       @apply w-28 xl:w-auto;
+}
+
+.log-container {
+      @apply pb-8 ml-4 mr-4 max-h-full overflow-auto w-full;
+}
+
+.page-container {
+      @apply flex w-full h-full flex-col overflow-hidden gap-4;
+}
+
+@keyframes proposed-route-id-anim {
+      0% {
+            border: 1px dashed var(--portgray);
+      }
+      50% {
+            border: 1px dashed transparent;
+      }
+      100% {
+            border: 1px dashed var(--portgray);
+      }
+}
+
+.proposed-route-id {
+      @apply inline-block px-4 py-2 border border-portgray mr-2 border-dashed rounded;
+      animation-name: proposed-route-id-anim;
+      animation-duration: 0.5s;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      animation-play-state: running;
 }
 
 .quick-stats {

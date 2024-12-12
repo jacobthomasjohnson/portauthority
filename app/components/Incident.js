@@ -1,10 +1,10 @@
-export const Incident = ({ incidentType, affectedID, incidentCost }) => {
+export const Incident = ({ incidentType, routeId, incidentCost }) => {
       return (
             <div className="group segment">
                   {" "}
                   {/* Segment (full) */}
                   <div className="segment-top text-portred"> {/* Incidents always red text */}
-                        <span className="font-semibold">{affectedID}</span>
+                        <span className="font-semibold">{routeId}</span>
                         <span className="font-extralight">|</span>
                         <span className="font-light">{incidentType}</span>
                         <span className="font-extralight">|</span>

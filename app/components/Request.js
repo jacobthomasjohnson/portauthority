@@ -1,6 +1,6 @@
 "use client";
 
-import useGameStore from "./gameStore";
+import useGameStore from "../store/gameStore";
 
 export const Request = () => {
       const generateRoute = useGameStore((state) => state.generateRoute);

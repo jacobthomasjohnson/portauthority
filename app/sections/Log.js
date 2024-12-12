@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import useGameStore from "./gameStore";
+import { useEffect, useRef } from "react";
+import useGameStore from "../store/gameStore";
 
 export const Log = () => {
       const log = useGameStore((state) => state.log);
@@ -21,7 +21,7 @@ export const Log = () => {
             }
       }, [log]);
 
-      return <div ref={logContainer} className="pb-8 ml-4 mr-4 max-h-full overflow-auto w-full"></div>;
+      return <div ref={logContainer} className="log-container"></div>;
 };
 
 export default Log;

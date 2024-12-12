@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import useGameStore from "./gameStore";
+import useGameStore from "../store/gameStore";
 
 export const Route = ({ routeID }) => {
       const findRouteById = useGameStore((state) => state.findRouteById);
