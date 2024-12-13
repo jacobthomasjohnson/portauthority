@@ -130,10 +130,26 @@ body {
       background: #555; /* Darker gray when hovered */
 }
 
+@keyframes log-item-anim {
+      0% {
+            opacity: 100%;
+      }
+      75% {
+            opacity: 100%;
+      }
+      100% {
+            opacity: 0%;
+      }
+}
+
 .log-item {
-      @apply p-4 ml-4 border border-portgray min-w-[400px] h-full;
+      animation-name: log-item-anim;
+      animation-fill-mode: forwards;
+      animation-duration: 5s;
+      animation-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+      @apply py-1;
 }
 
 .log-item:first-of-type {
-      @apply ml-0
+      @apply ml-0;
 }

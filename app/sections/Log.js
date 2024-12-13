@@ -8,8 +8,7 @@ export const Log = () => {
       const logContainer = useRef(null);
       const createLogItem = (text, color) => {
             let item = document.createElement("div");
-            item.classList.add("log-item");
-            item.className = `text-sm mb-1 text-[#${color}]`
+            item.className = `text-sm mb-1 text-[#${color}] log-item`
             item.innerHTML = text;
             logContainer.current.prepend(item);
       };
