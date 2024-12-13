@@ -5,69 +5,52 @@ import { useUnloadRoute } from "../actions/unloadRoute";
 
 export const Route = ({ routeId }) => {
       const findRouteById = useGameStore((state) => state.findRouteById);
-      const updatePlayerStats = useGameStore(
-            (state) => state.updatePlayerStats
-      );
-      const updateShip = useGameStore((state) => state.updateShip);
-      const deleteRoute = useGameStore((state) => state.deleteRoute);
       const unloadRoute = useUnloadRoute();
       const route = findRouteById(routeId);
-
-      // Handle click actions for different statuses
-      const handleRouteClick = (status) => {
-            switch (status) {
-                  case "received":
-                        console.log("Unload shipment");
-                        unloadRoute(routeId);
-                        break;
-                  case "damaged":
-                        console.log("Repair logic goes here.");
-                        break;
-                  case "stable":
-                        console.log("Show route details.");
-                        break;
-                  case "stolen":
-                        console.log("Handle stolen route (insurance).");
-                        break;
-                  default:
-                        console.warn("Unhandled route status:", status);
-            }
-      };
 
       // Early return if route is not found
       if (!route) return null;
 
-      // Ensure route.progress is within a valid range
+      // Dynamic class getters
+      const getClassNames = {
+            border: {
+                  received: "border-portgreen",
+                  damaged: "border-portred",
+                  waiting: "border-portgray",
+                  default: "",
+            },
+            progressBar: {
+                  stable: "bg-portblue",
+                  issue: "bg-portyellow",
+                  damaged: "bg-portred",
+                  received: "bg-portgreen",
+                  default: "",
+            },
+      };
+
+      const getBorderClass = (status) =>
+            getClassNames.border[status] || getClassNames.border.default;
+
+      const getProgressBarClass = (status) =>
+            getClassNames.progressBar[status] ||
+            getClassNames.progressBar.default;
+
+      // Handle route actions based on status
+      const handleRouteClick = (status) => {
+            const actions = {
+                  received: () => setTimeout(() => unloadRoute(routeId), 0), // Offload to idle time
+                  damaged: () => console.log("Repair logic goes here."),
+                  stable: () => console.log("Show route details."),
+                  stolen: () => console.log("Handle stolen route (insurance)."),
+                  default: () =>
+                        console.warn("Unhandled route status:", status),
+            };
+
+            (actions[status] || actions.default)();
+      };
+
+      // Progress bar clamping
       const progress = Math.max(0, Math.min(route.progress || 0, 100));
-
-      // Dynamic CSS classes
-      const getBorderClass = (status) => {
-            switch (status) {
-                  case "received":
-                        return "border-portgreen";
-                  case "damaged":
-                        return "border-portred";
-                  case "waiting":
-                        return "border-portgray";
-                  default:
-                        return "";
-            }
-      };
-
-      const getProgressBarClass = (status) => {
-            switch (status) {
-                  case "stable":
-                        return "bg-portblue";
-                  case "issue":
-                        return "bg-portyellow";
-                  case "damaged":
-                        return "bg-portred";
-                  case "received":
-                        return "bg-portgreen";
-                  default:
-                        return "";
-            }
-      };
 
       return (
             <div
@@ -84,6 +67,8 @@ export const Route = ({ routeId }) => {
                         <span className="font-light">
                               {Math.floor(progress)}%
                         </span>
+
+                        {/* Conditional Status Indicators */}
                         {route.status === "damaged" && (
                               <>
                                     <span className="font-extralight">|</span>
@@ -94,7 +79,6 @@ export const Route = ({ routeId }) => {
                         )}
                         {route.status === "waiting" && (
                               <>
-                                    {/* Check to see if there is an open dock. If there is, move this route to "received". If not, continue checking until there is an available dock. */}
                                     <span className="font-extralight">|</span>
                                     <span className="font-light">
                                           AWAITING DOCK
@@ -102,12 +86,16 @@ export const Route = ({ routeId }) => {
                               </>
                         )}
                   </div>
+
+                  {/* Progress Bar */}
                   <div
                         style={{ width: `${progress}%` }}
                         className={`progress-bar ${getProgressBarClass(
                               route.status
                         )}`}
                   ></div>
+
+                  {/* Received Status Action */}
                   {route.status === "received" && (
                         <div className="segment-bottom">
                               <div className="segment-link">

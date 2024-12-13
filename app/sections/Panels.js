@@ -18,19 +18,20 @@ export const Panels = () => {
             (state) => state.stopProgressUpdates
       );
       const createRoute = useGameStore((state) => state.createRoute);
+
       const [shipChoice, setShipChoice] = useState(null);
       const [noShipSelected, setNoShipSelected] = useState(false);
 
-      // Start progress updates on mount
+      // Start and stop progress updates
       useEffect(() => {
             startProgressUpdates();
-            return stopProgressUpdates; // Cleanup on unmount
+            return stopProgressUpdates; // Cleanup
       }, [startProgressUpdates, stopProgressUpdates]);
 
       // Handlers
       const handleSelectShip = (ship) => {
             setShipChoice(ship);
-            setNoShipSelected(false); // Reset error when a ship is selected
+            setNoShipSelected(false); // Reset error state
       };
 
       const handleConfirmRoute = () => {
@@ -39,87 +40,101 @@ export const Panels = () => {
                   return;
             }
             createRoute({ ...offeredRoute, shipId: shipChoice.id });
-            setCurrentPrompt(null); // Close modal
-            setShipChoice(null); // Clear selection
+            resetModalState();
       };
 
-      const handleCancelRoute = () => {
+      const handleCancelRoute = () => resetModalState();
+
+      const resetModalState = () => {
             setCurrentPrompt(null);
             setShipChoice(null);
             setNoShipSelected(false);
       };
 
-      // Filtering Routes
-      const getRoutesByStatus = (status) =>
-            routes.filter((route) => route.status === status);
+      const renderRoutes = (statuses) =>
+            statuses.flatMap((status) =>
+                  routes
+                        .filter((route) => route.status === status)
+                        .map((route) => (
+                              <Route key={route.id} routeId={route.id} />
+                        ))
+            );
 
       return (
             <div className="panels">
-                  {/* Modal for Ship Selection */}
+                  {/* Ship Selection Modal */}
                   {currentPrompt === "chooseShip" && (
                         <Modal
                               title="New Route Proposed"
                               onClose={handleCancelRoute}
                               onConfirm={handleConfirmRoute}
                         >
-                              {/* Modal Content */}
-                              <div className="flex gap-4 items-center justify-center px-4 w-full">
-                                    <div className="text-2xl flex items-center justify-center gap-4">
-                                          <span className="proposed-route-id">
+                              <div className="flex flex-col gap-4">
+                                    <div className="text-center">
+                                          <span className="proposed-route-id font-semibold">
                                                 {offeredRoute.routeId}
-                                          </span>
-                                          <span className="text-sm">
+                                          </span>{" "}
+                                          <span>
                                                 {offeredRoute.routeDirection ===
                                                 "inbound"
                                                       ? `FROM ${offeredRoute.routeDestination.name}`
                                                       : `TO ${offeredRoute.routeDestination.name}`}
                                           </span>
                                     </div>
-                                    <div className="text-portgray">|</div>
-                                    <div className="text-sm">
+                                    <div className="text-center text-portgray">
                                           carrying {offeredRoute.routeLoad}lbs
                                           worth{" "}
                                           <span className="text-portgreen">
                                                 ${offeredRoute.routeValue}
                                           </span>
                                     </div>
-                              </div>
-                              <div className="px-4 text-sm text-center w-full">
-                                    If you would like to accept this offer,
-                                    please select an available ship from the
-                                    following choices:
-                              </div>
-                              <div className="text-base w-full px-4">
-                                    {offeredRoute.routeShipChoices.map(
-                                          (ship) => (
-                                                <div
-                                                      key={ship.id}
-                                                      onClick={() =>
-                                                            handleSelectShip(
-                                                                  ship
-                                                            )
-                                                      }
-                                                      className={`my-2 p-4 border border-portgray rounded hover:cursor-pointer hover:text-white ${
-                                                            shipChoice?.id ===
-                                                            ship.id
-                                                                  ? "border-portgreen"
-                                                                  : ""
-                                                      }`}
-                                                >
-                                                      <span>{ship.name}</span>{" "}
-                                                      Speed: {ship.speed * 100}
-                                                      mph Durability:{" "}
-                                                      {ship.durability}
-                                                </div>
-                                          )
+                                    <div className="text-sm text-center">
+                                          Select an available ship for the
+                                          route:
+                                    </div>
+                                    <div className="flex flex-col px-4">
+                                          {offeredRoute.routeShipChoices.map(
+                                                (ship) => (
+                                                      <div
+                                                            key={ship.id}
+                                                            onClick={() =>
+                                                                  handleSelectShip(
+                                                                        ship
+                                                                  )
+                                                            }
+                                                            className={`my-2 p-4 border rounded cursor-pointer ${
+                                                                  shipChoice?.id ===
+                                                                  ship.id
+                                                                        ? "border-portgreen"
+                                                                        : "border-portgray"
+                                                            }`}
+                                                      >
+                                                            <span>
+                                                                  {ship.name}
+                                                            </span>{" "}
+                                                            <span>
+                                                                  Speed:{" "}
+                                                                  {ship.speed *
+                                                                        100}
+                                                                  mph
+                                                            </span>{" "}
+                                                            <span>
+                                                                  Durability:{" "}
+                                                                  {
+                                                                        ship.durability
+                                                                  }
+                                                            </span>
+                                                      </div>
+                                                )
+                                          )}
+                                    </div>
+                                    {noShipSelected && (
+                                          <div className="text-base text-portred text-center">
+                                                YOU MUST CHOOSE A SHIP FOR THE
+                                                ROUTE FIRST!
+                                          </div>
                                     )}
                               </div>
-                              {noShipSelected && (
-                                    <div className="text-base text-portred px-4">
-                                          YOU MUST CHOOSE A SHIP FOR THE ROUTE
-                                          FIRST!
-                                    </div>
-                              )}
                         </Modal>
                   )}
 
@@ -128,25 +143,14 @@ export const Panels = () => {
                         <div className="panel-title panel-title-first">
                               ROUTES
                         </div>
-                        <div className="panel">
-                              {getRoutesByStatus("stable").map((route) => (
-                                    <Route key={route.id} routeId={route.id} />
-                              ))}
-                        </div>
+                        <div className="panel">{renderRoutes(["stable"])}</div>
                   </div>
 
                   {/* Operations Section */}
                   <div className="panel-container">
                         <div className="panel-title">OPERATIONS</div>
                         <div className="panel">
-                              {["waiting", "received"].flatMap((status) =>
-                                    getRoutesByStatus(status).map((route) => (
-                                          <Route
-                                                key={route.id}
-                                                routeId={route.id}
-                                          />
-                                    ))
-                              )}
+                              {renderRoutes(["waiting", "received"])}
                         </div>
                   </div>
 
@@ -165,14 +169,7 @@ export const Panels = () => {
                               <div className="panel-section-title border-t">
                                     INCIDENT MANAGEMENT
                               </div>
-                              {["damaged", "stolen"].flatMap((status) =>
-                                    getRoutesByStatus(status).map((route) => (
-                                          <Route
-                                                key={route.id}
-                                                routeId={route.id}
-                                          />
-                                    ))
-                              )}
+                              {renderRoutes(["damaged", "stolen"])}
                         </div>
                   </div>
             </div>

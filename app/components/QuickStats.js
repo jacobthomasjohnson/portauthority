@@ -4,17 +4,24 @@ import { useEffect, useRef } from "react";
 import useGameStore from "../store/gameStore";
 
 export const QuickStats = () => {
-      const currentKarma = useGameStore((state) => state.playerStats.karma);
-      const currentCash = useGameStore((state) => state.playerStats.cash);
-      const currentLevel = useGameStore((state) => state.playerStats.level);
+      const playerStats = useGameStore((state) => state.playerStats);
+      const {
+            karma: currentKarma,
+            cash: currentCash,
+            level: currentLevel,
+      } = playerStats;
 
-      const prevKarma = useRef(currentKarma);
-      const prevCash = useRef(currentCash);
-      const prevLevel = useRef(currentLevel);
+      const previousStats = useRef({
+            karma: currentKarma,
+            cash: currentCash,
+            level: currentLevel,
+      });
 
-      const currentKarmaRef = useRef(null);
-      const currentCashRef = useRef(null);
-      const currentLevelRef = useRef(null);
+      const statRefs = {
+            karma: useRef(null),
+            cash: useRef(null),
+            level: useRef(null),
+      };
 
       const playAnimation = (statRef, animationText, type) => {
             if (!statRef.current) return;
@@ -33,78 +40,59 @@ export const QuickStats = () => {
             }, 3000); // Adjust duration as needed
       };
 
-      useEffect(() => {
-            if (currentCash !== prevCash.current) {
-                  const type = currentCash > prevCash.current ? "gain" : "lose";
-                  const diff = Math.abs(currentCash - prevCash.current);
-                  playAnimation(
-                        currentCashRef,
-                        `${type === "gain" ? "+" : "-"}$${diff}`,
-                        type
-                  );
+      const checkAndAnimate = (statName, currentStat) => {
+            const prevStat = previousStats.current[statName];
+            if (currentStat !== prevStat) {
+                  const type = currentStat > prevStat ? "gain" : "lose";
+                  const diff = Math.abs(currentStat - prevStat);
+                  const animationText =
+                        statName === "level" && type === "gain"
+                              ? "Level Up!"
+                              : statName === "level" && type === "lose"
+                              ? "Level Lost!"
+                              : `${type === "gain" ? "+" : "-"}${
+                                      statName === "cash" ? "$" : ""
+                                }${diff}${statName === "karma" ? "%" : ""}`;
+                  playAnimation(statRefs[statName], animationText, type);
             }
-            prevCash.current = currentCash;
+            previousStats.current[statName] = currentStat;
+      };
+
+      useEffect(() => {
+            checkAndAnimate("cash", currentCash);
       }, [currentCash]);
 
       useEffect(() => {
-            if (currentKarma !== prevKarma.current) {
-                  const type =
-                        currentKarma > prevKarma.current ? "gain" : "lose";
-                  const diff = Math.abs(currentKarma - prevKarma.current);
-                  playAnimation(
-                        currentKarmaRef,
-                        `${type === "gain" ? "+" : "-"}${diff}%`,
-                        type
-                  );
-            }
-            prevKarma.current = currentKarma;
+            checkAndAnimate("karma", currentKarma);
       }, [currentKarma]);
 
       useEffect(() => {
-            if (currentLevel !== prevLevel.current) {
-                  const type =
-                        currentLevel > prevLevel.current ? "gain" : "lose";
-                  playAnimation(
-                        currentLevelRef,
-                        type === "gain" ? "Level Up!" : "Level Lost!",
-                        type
-                  );
-            }
-            prevLevel.current = currentLevel;
+            checkAndAnimate("level", currentLevel);
       }, [currentLevel]);
 
       return (
             <div className="quick-stats relative">
-                  <div className="relative" ref={currentCashRef}>
+                  <div className="relative" ref={statRefs.cash}>
                         <span className="text-portgreen font-thin mr-1">
                               CASH:
                         </span>
-                        <span
-                              
-                              className="text-foreground relative"
-                        >
+                        <span className="text-foreground relative">
                               ${currentCash}
                         </span>
                   </div>
-                  <div>
+                  <div className="relative" ref={statRefs.karma}>
                         <span className="text-portgreen font-thin mr-1">
                               KARMA:
                         </span>
-                        <span
-                              ref={currentKarmaRef}
-                              className="text-foreground relative"
-                        >
+                        <span className="text-foreground relative">
                               {currentKarma}%
                         </span>
                   </div>
-                  <div>
+                  <div className="relative" ref={statRefs.level}>
                         <span className="text-portgreen font-thin mr-1">
                               LEVEL:
                         </span>
-                        <span
-                              ref={currentLevelRef}
-                              className="text-foreground relative"
-                        >
+                        <span className="text-foreground relative">
                               {currentLevel}
                         </span>
                   </div>
