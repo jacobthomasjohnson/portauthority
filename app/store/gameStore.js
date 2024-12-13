@@ -53,7 +53,7 @@ const useGameStore = create((set, get) => ({
                         ...state,
                         playerStats: {
                               ...state.playerStats,
-                              [key]: [value],
+                              [key]: value,
                         },
                   };
             });
@@ -105,47 +105,46 @@ const useGameStore = create((set, get) => ({
                   name: "Bohemouth",
                   available: true,
                   damaged: false,
-                  durability: 90,
-                  maxLoad: 92000,
-                  speed: 1,
-                  isRemote: true,
-            },
-            {
-                  id: 2,
-                  name: "Exitor",
-                  available: true,
-                  damaged: false,
-                  durability: 38,
-                  maxLoad: 65000,
-                  speed: 3,
-                  isRemote: true,
-            },
-            {
-                  id: 3,
-                  name: "Ceram",
-                  available: true,
-                  damaged: false,
-                  durability: 90,
-                  maxLoad: 92000,
+                  durability: 100,
+                  maxLoad: 10000,
                   speed: 1,
                   isRemote: false,
             },
-            {
-                  id: 4,
-                  name: "Dooba",
-                  available: true,
-                  damaged: false,
-                  durability: 38,
-                  maxLoad: 65000,
-                  speed: 3,
-                  isRemote: true,
-            },
+            // {
+            //       id: 2,
+            //       name: "Exitor",
+            //       available: true,
+            //       damaged: false,
+            //       durability: 38,
+            //       maxLoad: 65000,
+            //       speed: 3,
+            //       isRemote: true,
+            // },
+            // {
+            //       id: 3,
+            //       name: "Ceram",
+            //       available: true,
+            //       damaged: false,
+            //       durability: 90,
+            //       maxLoad: 92000,
+            //       speed: 1,
+            //       isRemote: false,
+            // },
+            // {
+            //       id: 4,
+            //       name: "Dooba",
+            //       available: true,
+            //       damaged: false,
+            //       durability: 38,
+            //       maxLoad: 65000,
+            //       speed: 3,
+            //       isRemote: true,
+            // },
       ],
       findShipById: (id) => {
             return get().ships.find((ship) => ship.shipId === id); // Returns the object from Ships that corresponds to the ID entered
       },
       updateShip: (shipId, key, value) => {
-
             set((state) => ({
                   ...state,
                   ships: state.ships.map((ship) =>
@@ -182,25 +181,82 @@ const useGameStore = create((set, get) => ({
       ///////////////////////// Routes System /////////////////////////
 
       routes: [
-            // {
-            //       id: "JDXSM", // Randomly generated string ID.
-            //       ship: 2, // Which ship (by ID) is in use for this route.
-            //       from: "PORT",
-            //       to: "CHI",
-            //       load: 847, // Value of route when completed, cut if issue occurs.
-            //       value: 10000,
-            //       progress: 0, // Actively updates throughout the course of the route.
-            //       status: "stable",
-            // },
+            {
+                  id: "XXXXX", // Randomly generated string ID.
+                  ship: 1, // Which ship (by ID) is in use for this route.
+                  from: "PORT",
+                  to: "CHI",
+                  load: 1000, // Value of route when completed, cut if issue occurs.
+                  value: 10000,
+                  distance: 100,
+                  progress: 100, // Actively updates throughout the course of the route.
+                  status: "received",
+            },
+            {
+                  id: "XX2XX", // Randomly generated string ID.
+                  ship: 2, // Which ship (by ID) is in use for this route.
+                  from: "PORT",
+                  to: "CHI",
+                  load: 1000, // Value of route when completed, cut if issue occurs.
+                  value: 10000,
+                  distance: 100,
+                  progress: 100, // Actively updates throughout the course of the route.
+                  status: "received",
+            },
+            {
+                  id: "XX3XX", // Randomly generated string ID.
+                  ship: 3, // Which ship (by ID) is in use for this route.
+                  from: "PORT",
+                  to: "CHI",
+                  load: 1000, // Value of route when completed, cut if issue occurs.
+                  value: 10000,
+                  distance: 100,
+                  progress: 100, // Actively updates throughout the course of the route.
+                  status: "received",
+            },
+            {
+                  id: "XX4XX", // Randomly generated string ID.
+                  ship: 4, // Which ship (by ID) is in use for this route.
+                  from: "PORT",
+                  to: "CHI",
+                  load: 1000, // Value of route when completed, cut if issue occurs.
+                  value: 10000,
+                  distance: 100,
+                  progress: 100, // Actively updates throughout the course of the route.
+                  status: "received",
+            },
+            {
+                  id: "XX5XX", // Randomly generated string ID.
+                  ship: 5, // Which ship (by ID) is in use for this route.
+                  from: "PORT",
+                  to: "CHI",
+                  load: 1000, // Value of route when completed, cut if issue occurs.
+                  value: 10000,
+                  distance: 100,
+                  progress: 100, // Actively updates throughout the course of the route.
+                  status: "received",
+            },
       ],
       findRouteById: (id) => get().routes.find((route) => route.id === id),
-
+      deleteRoute: (routeId) => {
+            set((state) => ({
+                  routes: state.routes.filter((route) => route.id !== routeId),
+            }));
+      },
       createRoute: (details) => {
             get().updateShip(details.shipId, "available", false);
             set((state) => ({
                   ...state,
                   log: [
-                        `New route created: ${details.routeId} traveling from ${details.routeDirection === "inbound" ? details.routeDirection : "PORT"} to ${details.routeDirection === "inbound" ? "PORT" : details.routeDestination.name}`,
+                        `New route created: ${details.routeId} traveling from ${
+                              details.routeDirection === "inbound"
+                                    ? details.routeDirection
+                                    : "PORT"
+                        } to ${
+                              details.routeDirection === "inbound"
+                                    ? "PORT"
+                                    : details.routeDestination.name
+                        }`,
                         ...state.log,
                   ],
                   routes: [
@@ -218,6 +274,7 @@ const useGameStore = create((set, get) => ({
                                           : details.routeDestination.name,
                               load: details.routeLoad,
                               value: details.routeValue,
+                              distance: details.routeDistance,
                               progress: 0,
                               status: "stable",
                         },
@@ -254,7 +311,6 @@ const useGameStore = create((set, get) => ({
 
             const remoteShips = availableShips.filter((ship) => ship.isRemote);
 
-
             const localShips = availableShips.filter((ship) => !ship.isRemote);
 
             const remoteShipsAvailable = remoteShips.length > 0;
@@ -269,6 +325,7 @@ const useGameStore = create((set, get) => ({
                         offeredRoute: {
                               routeId: generatedRouteId,
                               routeDestination: generatedRouteDestination,
+                              routeDistance: generatedRouteDestination.distance,
                               routeDirection: "inbound",
                               routeLoad: generatedRouteLoad,
                               routeValue: determinedLoadValue,
@@ -282,6 +339,7 @@ const useGameStore = create((set, get) => ({
                         offeredRoute: {
                               routeId: generatedRouteId,
                               routeDestination: generatedRouteDestination,
+                              routeDistance: generatedRouteDestination.distance,
                               routeDirection: "outbound",
                               routeLoad: generatedRouteLoad,
                               routeValue: determinedLoadValue,

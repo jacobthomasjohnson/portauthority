@@ -130,7 +130,7 @@ export const Panels = () => {
                         </div>
                         <div className="panel">
                               {getRoutesByStatus("stable").map((route) => (
-                                    <Route key={route.id} routeID={route.id} />
+                                    <Route key={route.id} routeId={route.id} />
                               ))}
                         </div>
                   </div>
@@ -143,7 +143,7 @@ export const Panels = () => {
                                     getRoutesByStatus(status).map((route) => (
                                           <Route
                                                 key={route.id}
-                                                routeID={route.id}
+                                                routeId={route.id}
                                           />
                                     ))
                               )}
@@ -169,7 +169,7 @@ export const Panels = () => {
                                     getRoutesByStatus(status).map((route) => (
                                           <Route
                                                 key={route.id}
-                                                routeID={route.id}
+                                                routeId={route.id}
                                           />
                                     ))
                               )}

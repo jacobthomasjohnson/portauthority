@@ -5,11 +5,17 @@ import { Request } from "../components/Request";
 export const Header = () => {
       return (
             <header className="header">
-                  <Logo />
-                  <Request />
-                  <QuickStats />
+                  <div className="w-1/3">
+                        <Logo />
+                  </div>
+                  <div className="w-1/3 flex justify-center">
+                        <Request />
+                  </div>
+                  <div className="w-1/3">
+                        <QuickStats />
+                  </div>
             </header>
-      )
-}
+      );
+};
 
 export default Header;
